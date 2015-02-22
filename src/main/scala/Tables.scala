@@ -21,7 +21,7 @@ object Tables {
     def positionId = column[Int]("positionId", O.NotNull)
     def playerId = column[Int]("playerId", O.PrimaryKey, O.AutoInc)
     def * = (name, positionId, playerId.?) <> (Player.tupled, Player.unapply)
-    def positionIdFk = foreignKey("player_positionId_fk", positionId, positions)(_.positionId, ForeignKeyAction.Cascade)
+    def positionIdFk = foreignKey("player_positionId_fk", positionId, positions)(_.positionId)
   }
   val players = TableQuery[Players]
   
@@ -31,7 +31,7 @@ object Tables {
     def venue = column[String]("venue", O.NotNull)
     def opponentTeam = column[String]("opponentTeam", O.NotNull)
     def matchId = column[Int]("matchId", O.PrimaryKey, O.AutoInc)
-    def * = (tournamentName, dateAndTime, venue, matchId.?) <> (Match.tupled, Match.unapply)
+    def * = (tournamentName, dateAndTime, venue, opponentTeam, matchId.?) <> (Match.tupled, Match.unapply)
   }
   val matches = TableQuery[Matches]
   
@@ -41,8 +41,9 @@ object Tables {
     def teamId = column[Int]("teamId", O.PrimaryKey, O.AutoInc)
     def * =  (matchId, playerId, teamId.?) <> (Team.tupled, Team.unapply)
     
-    def matchIdFk = foreignKey("teams_matchid_fk", matchId, matches)(_.matchId, ForeignKeyAction.Cascade)
-    def playerIdFk = foreignKey("teams_playerid_fk", playerId, players)(_.playerId, ForeignKeyAction.Cascade)
+    def matchIdFk = foreignKey("teams_matchId_fk", matchId, matches)(_.matchId)
+    def playerIdFk = foreignKey("teams_playerId_fk", playerId, players)(_.playerId)
   }
   val teams = TableQuery[Teams]
+  
 }
